@@ -1,7 +1,17 @@
 "use server"
 
+type loginPendingState = {
+    success: boolean,
+    statusCode: number,
+    message: string,
+    data: {
+        accessToken: string,
+        refreshToken: string,
+    }
+}
 
-export const loginAction = async (formData : FormData) => {
+
+export const loginAction = async (pendingState : loginPendingState ,formData : FormData) => {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const body = {
@@ -18,5 +28,5 @@ export const loginAction = async (formData : FormData) => {
     });
 
     const result = await res.json();
-    console.log(result)
+    return result
 }
