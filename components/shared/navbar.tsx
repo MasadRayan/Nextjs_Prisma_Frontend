@@ -1,22 +1,20 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
+import * as React from "react";
+import Link from "next/link";
 import {
-  BellIcon,
-  CreditCardIcon,
   LayoutGridIcon,
   LogOutIcon,
   MenuIcon,
   SettingsIcon,
   UserIcon,
   type LucideIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +23,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   Sheet,
   SheetClose,
@@ -33,44 +31,43 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 
 type NavLink = {
-  label: string
-  href: string
-}
+  label: string;
+  href: string;
+};
 
 type MenuItem = {
-  label: string
-  icon: LucideIcon
-  href: string
-  destructive?: boolean
-}
+  label: string;
+  icon: LucideIcon;
+  href: string;
+  destructive?: boolean;
+};
 
 const navLinks: NavLink[] = [
-  { label: "Dashboard", href: "#" },
-  { label: "Projects", href: "#" },
-  { label: "Team", href: "#" },
-  { label: "Reports", href: "#" },
-]
+  { label: "Home", href: "/" },
+  { label: "Dashboard", href: "/dashboard" },
+  { label: "Projects", href: "/projects" },
+  { label: "Team", href: "/team" },
+  { label: "Reports", href: "/reports" },
+];
 
 const userMenuItems: MenuItem[] = [
   { label: "Profile", icon: UserIcon, href: "#" },
   { label: "Settings", icon: SettingsIcon, href: "#" },
-  { label: "Billing", icon: CreditCardIcon, href: "#" },
-  { label: "Notifications", icon: BellIcon, href: "#" },
-]
+];
 
 const userMenuFooterItems: MenuItem[] = [
   { label: "Log out", icon: LogOutIcon, href: "#", destructive: true },
-]
+];
 
 const user = {
   name: "Jordan Rivera",
   email: "jordan@acme.com",
-  avatar: "/user-avatar.png",
+  avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Jordan+Rivera",
   initials: "JR",
-}
+};
 
 function Logo() {
   return (
@@ -81,9 +78,9 @@ function Logo() {
       <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
         <LayoutGridIcon className="size-4" />
       </span>
-      <span className="text-lg">Acme</span>
+      <span className="text-lg">Prisma Press</span>
     </Link>
-  )
+  );
 }
 
 function UserMenu() {
@@ -114,18 +111,18 @@ function UserMenu() {
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           {userMenuItems.map((item) => {
-            const Icon = item.icon
+            const Icon = item.icon;
             return (
               <DropdownMenuItem key={item.label}>
                 <Icon />
                 {item.label}
               </DropdownMenuItem>
-            )
+            );
           })}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         {userMenuFooterItems.map((item) => {
-          const Icon = item.icon
+          const Icon = item.icon;
           return (
             <DropdownMenuItem
               key={item.label}
@@ -134,17 +131,17 @@ function UserMenu() {
               <Icon />
               {item.label}
             </DropdownMenuItem>
-          )
+          );
         })}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }
 
 export function Navbar() {
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
-      <nav className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+      <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         {/* Left: logo */}
         <div className="flex items-center gap-2">
           <Logo />
@@ -158,7 +155,7 @@ export function Navbar() {
                 href={link.href}
                 className={cn(
                   "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors",
-                  "hover:bg-accent hover:text-accent-foreground"
+                  "hover:bg-[#1d786f] hover:text-white cursor-pointer transition-all",
                 )}
               >
                 {link.label}
@@ -169,7 +166,7 @@ export function Navbar() {
 
         {/* Right: user menu (desktop) + hamburger (mobile) */}
         <div className="flex items-center gap-2">
-          <div className="hidden md:block">
+          <div className="hidden md:block cursor-pointer">
             <UserMenu />
           </div>
 
@@ -211,8 +208,11 @@ export function Navbar() {
               {/* User block */}
               <div className="mt-auto flex flex-col gap-3 p-4">
                 <div className="flex items-center gap-3">
-                  <Avatar className="size-9">
-                    <AvatarImage src={user.avatar || "/placeholder.svg"} alt="" />
+                  <Avatar className="size-9 cursor-pointer">
+                    <AvatarImage
+                      src={user.avatar || "/placeholder.svg"}
+                      alt=""
+                    />
                     <AvatarFallback>{user.initials}</AvatarFallback>
                   </Avatar>
                   <div className="flex min-w-0 flex-col">
@@ -226,7 +226,7 @@ export function Navbar() {
                 </div>
                 <div className="flex flex-col gap-1">
                   {[...userMenuItems, ...userMenuFooterItems].map((item) => {
-                    const Icon = item.icon
+                    const Icon = item.icon;
                     return (
                       <SheetClose key={item.label} asChild>
                         <Link
@@ -234,14 +234,14 @@ export function Navbar() {
                           className={cn(
                             "inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
                             item.destructive &&
-                              "text-destructive hover:text-destructive"
+                              "text-destructive hover:text-destructive",
                           )}
                         >
                           <Icon className="size-4" />
                           {item.label}
                         </Link>
                       </SheetClose>
-                    )
+                    );
                   })}
                 </div>
               </div>
@@ -250,5 +250,5 @@ export function Navbar() {
         </div>
       </nav>
     </header>
-  )
+  );
 }
