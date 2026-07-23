@@ -62,13 +62,6 @@ const userMenuFooterItems: MenuItem[] = [
   { label: "Log out", icon: LogOutIcon, href: "#", destructive: true },
 ];
 
-const user = {
-  name: "Jordan Rivera",
-  email: "jordan@acme.com",
-  avatar: "https://api.dicebear.com/9.x/initials/svg?seed=Jordan+Rivera",
-  initials: "JR",
-};
-
 function Logo() {
   return (
     <Link
@@ -83,7 +76,7 @@ function Logo() {
   );
 }
 
-function UserMenu() {
+function UserMenu({ user }: { user: IUser }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -94,18 +87,23 @@ function UserMenu() {
           aria-label="Open user menu"
         >
           <Avatar className="size-8 cursor-pointer">
-            <AvatarImage src={user.avatar || "/placeholder.svg"} alt="" />
-            <AvatarFallback>{user.initials}</AvatarFallback>
+            <AvatarImage
+              src={user.data.profile.profilePhoto || "/placeholder.svg"}
+              alt=""
+            />
+            <AvatarFallback>
+                      {user.data.name?.slice(0, 1) || "?"}
+                    </AvatarFallback>{" "}
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel className="flex flex-col gap-0.5">
           <span className="text-sm font-medium text-foreground">
-            {user.name}
+            {user.data.name}
           </span>
           <span className="text-xs font-normal text-muted-foreground">
-            {user.email}
+            {user.data.email}
           </span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -138,14 +136,42 @@ function UserMenu() {
   );
 }
 
-export function Navbar() {
+type IUser = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    id: string;
+    name: string;
+    email: string;
+    activeStatus: string;
+    role: string;
+    createdAt: string;
+    updatedAt: string;
+    profile: {
+      id: string;
+      profilePhoto: string;
+      bio: string;
+      userId: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  };
+};
+
+type NavbarProps = {
+  user: IUser;
+};
+
+export function Navbar({ user }: NavbarProps) {
+  user = user;
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         {/* Left: logo */}
-          <div className="flex items-center gap-2">
-            <Logo />
-          </div>
+        <div className="flex items-center gap-2">
+          <Logo />
+        </div>
         {/* Center: nav links (desktop) */}
         <ul className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
@@ -166,7 +192,7 @@ export function Navbar() {
         {/* Right: user menu (desktop) + hamburger (mobile) */}
         <div className="flex items-center gap-2 ">
           <div className="hidden md:block ">
-            <UserMenu />
+            <UserMenu user={user} />
           </div>
 
           {/* Mobile menu */}
@@ -209,17 +235,20 @@ export function Navbar() {
                 <div className="flex items-center gap-3">
                   <Avatar className="size-9 cursor-pointer">
                     <AvatarImage
-                      src={user.avatar || "/placeholder.svg"}
+                      className="size-9 cursor-pointer"
+                      src={user.data.profile.profilePhoto || "/placeholder.svg"}
                       alt=""
                     />
-                    <AvatarFallback>{user.initials}</AvatarFallback>
+                    <AvatarFallback>
+                      {user.data.name?.slice(0, 1) || "?"}
+                    </AvatarFallback>{" "}
                   </Avatar>
                   <div className="flex min-w-0 flex-col">
                     <span className="truncate text-sm font-medium text-foreground">
-                      {user.name}
+                      {user.data.name}
                     </span>
                     <span className="truncate text-xs text-muted-foreground">
-                      {user.email}
+                      {user.data.email}
                     </span>
                   </div>
                 </div>
