@@ -173,21 +173,13 @@ type NavbarProps = {
 };
 
 export function Navbar({ user }: NavbarProps) {
-  // Hooks live inside the component body now, not at module scope.
-  const [isLoggedOut, setIsLoggedOut] = React.useState(false);
   const router = useRouter();
 
   const handleLogOut = async () => {
     await logOut();
-    setIsLoggedOut(true);
+    toast.success("User logged out successfully");
+    router.push("/login");
   };
-
-  React.useEffect(() => {
-    if (isLoggedOut) {
-      toast.success("User logged out successfully");
-      router.push("/login");
-    }
-  }, [isLoggedOut, router]);
 
   const userMenuFooterItems: MenuItem[] = [
     {
@@ -214,7 +206,7 @@ export function Navbar({ user }: NavbarProps) {
                 href={link.href}
                 className={cn(
                   "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors",
-                  "hover:bg-[#1d786f] hover:text-white cursor-pointer transition-all"
+                  "hover:bg-[#1d786f] hover:text-white cursor-pointer transition-all",
                 )}
               >
                 {link.label}
@@ -225,8 +217,14 @@ export function Navbar({ user }: NavbarProps) {
 
         {/* Right: user menu (desktop) + hamburger (mobile) */}
         <div className="flex items-center gap-2 ">
-          <div className="hidden md:block ">
-            <UserMenu user={user} footerItems={userMenuFooterItems} />
+          <div className="hidden md:block">
+            {user.success ? (
+              <UserMenu user={user} footerItems={userMenuFooterItems} />
+            ) : (
+              <Link href="/login">
+                <Button variant="default">Login</Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu */}
@@ -314,7 +312,7 @@ export function Navbar({ user }: NavbarProps) {
                             className={cn(
                               "inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
                               item.destructive &&
-                                "text-destructive hover:text-destructive"
+                                "text-destructive hover:text-destructive",
                             )}
                           >
                             <Icon className="size-4" />
@@ -326,10 +324,7 @@ export function Navbar({ user }: NavbarProps) {
                   </div>
                 </div>
               ) : (
-                <Link
-                  href="/login"
-                  className="mt-auto flex flex-col gap-3 p-4"
-                >
+                <Link href="/login" className="mt-auto flex flex-col gap-3 p-4">
                   <Button>Login</Button>
                 </Link>
               )}
