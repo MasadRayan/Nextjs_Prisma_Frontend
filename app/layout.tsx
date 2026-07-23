@@ -3,6 +3,7 @@ import "./globals.css";
 import { IBM_Plex_Sans, Source_Sans_3 } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
+import { Navbar } from "@/components/shared/navbar";
 
 const sourceSans3Heading = Source_Sans_3({subsets:['latin'],variable:'--font-heading'});
 
@@ -24,6 +25,7 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", "font-sans", ibmPlexSans.variable, sourceSans3Heading.variable)}
     >
       <body className="min-h-full flex flex-col">
+        <Navbar></Navbar>
         {children}
         <Toaster position="top-right" richColors />
         </body>
