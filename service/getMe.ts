@@ -1,3 +1,5 @@
+"use server"
+
 import { cookies } from "next/headers";
 
 export const getMyProfile = async() => {
@@ -16,6 +18,11 @@ export const getMyProfile = async() => {
     const res = await fetch(`${process.env.BACKEND_API_URL}/api/users/me`, {
         headers: {
             Cookie : `accessToken=${accessToke}`,
+        },
+        cache: "force-cache",
+        next: {
+            revalidate: 60 * 60 * 24, // 1 day
+            tags: ["my-profile"]
         }
     })
 

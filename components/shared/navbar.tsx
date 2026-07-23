@@ -32,6 +32,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { logOut } from "@/service/logOut";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type NavLink = {
   label: string;
@@ -43,6 +46,7 @@ type MenuItem = {
   icon: LucideIcon;
   href: string;
   destructive?: boolean;
+  onClick?: () => void;
 };
 
 const navLinks: NavLink[] = [
@@ -58,10 +62,6 @@ const userMenuItems: MenuItem[] = [
   { label: "Settings", icon: SettingsIcon, href: "#" },
 ];
 
-const userMenuFooterItems: MenuItem[] = [
-  { label: "Log out", icon: LogOutIcon, href: "#", destructive: true },
-];
-
 function Logo() {
   return (
     <Link
@@ -73,66 +73,6 @@ function Logo() {
       </span>
       <span className="text-lg">Prisma Press</span>
     </Link>
-  );
-}
-
-function UserMenu({ user }: { user: IUser }) {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="rounded-full"
-          aria-label="Open user menu"
-        >
-          <Avatar className="size-8 cursor-pointer">
-            <AvatarImage
-              src={user.data.profile.profilePhoto || "/placeholder.svg"}
-              alt=""
-            />
-            <AvatarFallback>
-                      {user.data.name?.slice(0, 1) || "?"}
-                    </AvatarFallback>{" "}
-          </Avatar>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-56">
-        <DropdownMenuLabel className="flex flex-col gap-0.5">
-          <span className="text-sm font-medium text-foreground">
-            {user.data.name}
-          </span>
-          <span className="text-xs font-normal text-muted-foreground">
-            {user.data.email}
-          </span>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          {userMenuItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <DropdownMenuItem key={item.label}>
-                <Icon />
-                {item.label}
-              </DropdownMenuItem>
-            );
-          })}
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        {userMenuFooterItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <DropdownMenuItem
-              key={item.label}
-              variant={item.destructive ? "destructive" : "default"}
-            >
-              <Icon />
-              {item.label}
-            </DropdownMenuItem>
-          );
-        })}
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 }
 
@@ -159,12 +99,106 @@ type IUser = {
   };
 };
 
+// UserMenu now receives the logout item(s) as a prop instead of reading a
+// module-level array, since the logout handler depends on component state.
+function UserMenu({
+  user,
+  footerItems,
+}: {
+  user: IUser;
+  footerItems: MenuItem[];
+}) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="rounded-full"
+          aria-label="Open user menu"
+        >
+          <Avatar className="size-8 cursor-pointer">
+            <AvatarImage
+              src={user.data?.profile.profilePhoto || "/placeholder.svg"}
+              alt=""
+            />
+            <AvatarFallback>
+              {user.data?.name?.slice(0, 1) || "?"}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel className="flex flex-col gap-0.5">
+          <span className="text-sm font-medium text-foreground">
+            {user.data?.name || "User"}
+          </span>
+          <span className="text-xs font-normal text-muted-foreground">
+            {user.data?.email || "user@example.com"}
+          </span>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          {userMenuItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <DropdownMenuItem key={item.label}>
+                <Icon />
+                {item.label}
+              </DropdownMenuItem>
+            );
+          })}
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        {footerItems.map((item) => {
+          const Icon = item.icon;
+          return (
+            <DropdownMenuItem
+              key={item.label}
+              variant={item.destructive ? "destructive" : "default"}
+              onClick={item.onClick}
+            >
+              <Icon />
+              {item.label}
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
 type NavbarProps = {
   user: IUser;
 };
 
 export function Navbar({ user }: NavbarProps) {
-  user = user;
+  // Hooks live inside the component body now, not at module scope.
+  const [isLoggedOut, setIsLoggedOut] = React.useState(false);
+  const router = useRouter();
+
+  const handleLogOut = async () => {
+    await logOut();
+    setIsLoggedOut(true);
+  };
+
+  React.useEffect(() => {
+    if (isLoggedOut) {
+      toast.success("User logged out successfully");
+      router.push("/login");
+    }
+  }, [isLoggedOut, router]);
+
+  const userMenuFooterItems: MenuItem[] = [
+    {
+      label: "Log out",
+      icon: LogOutIcon,
+      href: "#",
+      destructive: true,
+      onClick: handleLogOut,
+    },
+  ];
+
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
@@ -180,7 +214,7 @@ export function Navbar({ user }: NavbarProps) {
                 href={link.href}
                 className={cn(
                   "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition-colors",
-                  "hover:bg-[#1d786f] hover:text-white cursor-pointer transition-all",
+                  "hover:bg-[#1d786f] hover:text-white cursor-pointer transition-all"
                 )}
               >
                 {link.label}
@@ -192,7 +226,7 @@ export function Navbar({ user }: NavbarProps) {
         {/* Right: user menu (desktop) + hamburger (mobile) */}
         <div className="flex items-center gap-2 ">
           <div className="hidden md:block ">
-            <UserMenu user={user} />
+            <UserMenu user={user} footerItems={userMenuFooterItems} />
           </div>
 
           {/* Mobile menu */}
@@ -231,48 +265,74 @@ export function Navbar({ user }: NavbarProps) {
               <Separator />
 
               {/* User block */}
-              <div className="mt-auto flex flex-col gap-3 p-4">
-                <div className="flex items-center gap-3">
-                  <Avatar className="size-9 cursor-pointer">
-                    <AvatarImage
-                      className="size-9 cursor-pointer"
-                      src={user.data.profile.profilePhoto || "/placeholder.svg"}
-                      alt=""
-                    />
-                    <AvatarFallback>
-                      {user.data.name?.slice(0, 1) || "?"}
-                    </AvatarFallback>{" "}
-                  </Avatar>
-                  <div className="flex min-w-0 flex-col">
-                    <span className="truncate text-sm font-medium text-foreground">
-                      {user.data.name}
-                    </span>
-                    <span className="truncate text-xs text-muted-foreground">
-                      {user.data.email}
-                    </span>
+              {user.success ? (
+                <div className="mt-auto flex flex-col gap-3 p-4">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="size-9 cursor-pointer">
+                      <AvatarImage
+                        className="size-9 cursor-pointer"
+                        src={
+                          user.data?.profile.profilePhoto || "/placeholder.svg"
+                        }
+                        alt=""
+                      />
+                      <AvatarFallback>
+                        {user.data?.name?.slice(0, 1) || "?"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex min-w-0 flex-col">
+                      <span className="truncate text-sm font-medium text-foreground">
+                        {user.data?.name || "User"}
+                      </span>
+                      <span className="truncate text-xs text-muted-foreground">
+                        {user.data?.email || "user@example.com"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    {userMenuItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <SheetClose key={item.label} asChild>
+                          <Link
+                            href={item.href}
+                            className="inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+                          >
+                            <Icon className="size-4" />
+                            {item.label}
+                          </Link>
+                        </SheetClose>
+                      );
+                    })}
+                    {userMenuFooterItems.map((item) => {
+                      const Icon = item.icon;
+                      return (
+                        <SheetClose key={item.label} asChild>
+                          <button
+                            type="button"
+                            onClick={item.onClick}
+                            className={cn(
+                              "inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
+                              item.destructive &&
+                                "text-destructive hover:text-destructive"
+                            )}
+                          >
+                            <Icon className="size-4" />
+                            {item.label}
+                          </button>
+                        </SheetClose>
+                      );
+                    })}
                   </div>
                 </div>
-                <div className="flex flex-col gap-1">
-                  {[...userMenuItems, ...userMenuFooterItems].map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <SheetClose key={item.label} asChild>
-                        <Link
-                          href={item.href}
-                          className={cn(
-                            "inline-flex h-9 items-center gap-2 rounded-md px-3 text-sm font-medium text-foreground transition-colors hover:bg-accent hover:text-accent-foreground",
-                            item.destructive &&
-                              "text-destructive hover:text-destructive",
-                          )}
-                        >
-                          <Icon className="size-4" />
-                          {item.label}
-                        </Link>
-                      </SheetClose>
-                    );
-                  })}
-                </div>
-              </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="mt-auto flex flex-col gap-3 p-4"
+                >
+                  <Button>Login</Button>
+                </Link>
+              )}
             </SheetContent>
           </Sheet>
         </div>
