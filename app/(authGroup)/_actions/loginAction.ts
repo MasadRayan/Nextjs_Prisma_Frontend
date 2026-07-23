@@ -48,7 +48,6 @@ export const loginAction = async (pendingState : LoginState ,formData : FormData
             sameSite: "lax"
         })
 
-        redirect("/dashboard")
     }
 
     return result
