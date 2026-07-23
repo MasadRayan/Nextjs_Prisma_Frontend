@@ -72,7 +72,7 @@ const user = {
 function Logo() {
   return (
     <Link
-      href="#"
+      href="/"
       className="flex items-center gap-2 font-semibold tracking-tight text-foreground"
     >
       <span className="flex size-8 items-center justify-center rounded-md bg-primary text-primary-foreground">
@@ -93,7 +93,7 @@ function UserMenu() {
           className="rounded-full"
           aria-label="Open user menu"
         >
-          <Avatar className="size-8">
+          <Avatar className="size-8 cursor-pointer">
             <AvatarImage src={user.avatar || "/placeholder.svg"} alt="" />
             <AvatarFallback>{user.initials}</AvatarFallback>
           </Avatar>
@@ -143,10 +143,9 @@ export function Navbar() {
     <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
       <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
         {/* Left: logo */}
-        <div className="flex items-center gap-2">
-          <Logo />
-        </div>
-
+          <div className="flex items-center gap-2">
+            <Logo />
+          </div>
         {/* Center: nav links (desktop) */}
         <ul className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
@@ -165,8 +164,8 @@ export function Navbar() {
         </ul>
 
         {/* Right: user menu (desktop) + hamburger (mobile) */}
-        <div className="flex items-center gap-2">
-          <div className="hidden md:block cursor-pointer">
+        <div className="flex items-center gap-2 ">
+          <div className="hidden md:block ">
             <UserMenu />
           </div>
 
