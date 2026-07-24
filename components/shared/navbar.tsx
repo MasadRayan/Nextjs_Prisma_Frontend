@@ -35,6 +35,7 @@ import {
 import { logOut } from "@/service/logOut";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { getSafeImageUrl } from "@/lib/isValidImageUrl";
 
 type NavLink = {
   label: string;
@@ -51,10 +52,9 @@ type MenuItem = {
 
 const navLinks: NavLink[] = [
   { label: "Home", href: "/" },
-  { label: "Dashboard", href: "/dashboard" },
-  { label: "Projects", href: "/projects" },
-  { label: "Team", href: "/team" },
-  { label: "Reports", href: "/reports" },
+  { label: "About", href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const userMenuItems: MenuItem[] = [
@@ -119,7 +119,7 @@ function UserMenu({
         >
           <Avatar className="size-8 cursor-pointer">
             <AvatarImage
-              src={user.data?.profile.profilePhoto || "/placeholder.svg"}
+              src={getSafeImageUrl(user.data?.profile.profilePhoto) || "/placeholder.svg"}
               alt=""
             />
             <AvatarFallback>
@@ -270,7 +270,7 @@ export function Navbar({ user }: NavbarProps) {
                       <AvatarImage
                         className="size-9 cursor-pointer"
                         src={
-                          user.data?.profile.profilePhoto || "/placeholder.svg"
+                          getSafeImageUrl(user.data?.profile.profilePhoto) || "/placeholder.svg"
                         }
                         alt=""
                       />

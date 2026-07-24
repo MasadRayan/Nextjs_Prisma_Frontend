@@ -17,7 +17,6 @@ export const registerAction = async (prevState: any, formData: FormData) => {
     })
 
     const result = await res.json();
-    console.log(result)
 
     return result
 
