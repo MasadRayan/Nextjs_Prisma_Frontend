@@ -8,7 +8,7 @@ const PremiumNewsList = async () => {
         id: "f0c7278e-9c52-478d-a4f9-c91619ee7b36",
         title: "My Fourth Post",
         content: "Content of the post goes here.",
-        thumbnail: "https://example.com/thumbnail.jpg",
+        thumbnail: "https://i.ibb.co/4RQHr9ST/download-3.jpg",
         isFeatured: false,
         status: "PUBLISHED",
         tags: ["typescript", "prisma", "express"],

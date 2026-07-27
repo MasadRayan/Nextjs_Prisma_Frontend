@@ -46,7 +46,7 @@ export function NewsCard({ news }: NewsCardProps) {
       <div className="flex flex-1 flex-col gap-3 p-5">
         {/* Tags */}
         {news.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1.5 items-center">
             {news.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag}
