@@ -4,14 +4,14 @@ import Image from 'next/image';
 import { formatDistanceToNow } from 'date-fns';
 import { MessageCircle, Eye, Flame, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { NewsItem } from '@/lib/_types/news';
+import type { NewsItem } from '@/lib/types';
 
 interface NewsCardProps {
   news: NewsItem;
 }
 
 export function NewsCard({ news }: NewsCardProps) {
-  const approvedComments = news.comments.filter((c) => c.status === 'APPROVED').length;
+  const approvedComments = news.comments?.filter((c) => c.status === 'APPROVED').length ?? 0;
   const timeAgo = formatDistanceToNow(new Date(news.createdAt), { addSuffix: true });
 
   return (
@@ -27,7 +27,7 @@ export function NewsCard({ news }: NewsCardProps) {
       {/* Thumbnail Container */}
       <div className="relative h-48 w-full overflow-hidden bg-muted/60">
         <Image
-          src={news.thumbnail}
+          src={news.thumbnail ?? '/placeholder.svg'}
           alt={news.title}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -77,11 +77,11 @@ export function NewsCard({ news }: NewsCardProps) {
         <div className="flex items-center gap-3 py-3">
           <div className="h-7 w-7 rounded-full bg-linear-to-br from-primary/70 to-primary/40 flex items-center justify-center shrink-0">
             <span className="text-xs font-bold text-primary-foreground">
-              {news.author.name.charAt(0).toUpperCase()}
+              {news.author?.name.charAt(0).toUpperCase() ?? '?'}
             </span>
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs font-medium text-foreground truncate">{news.author.name}</p>
+            <p className="text-xs font-medium text-foreground truncate">{news.author?.name ?? 'Unknown'}</p>
             <p className="text-xs text-muted-foreground/60">{timeAgo}</p>
           </div>
           <div className="flex items-center gap-3 text-xs text-muted-foreground/70 shrink-0">

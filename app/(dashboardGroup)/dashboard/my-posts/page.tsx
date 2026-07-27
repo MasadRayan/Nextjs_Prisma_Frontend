@@ -1,5 +1,7 @@
 import React, { Suspense } from 'react'
 import MyPostSkeleton from '../../_components/myPostComponent/MyPostSkeleton';
+import PostFromDialog from '../../_components/myPostComponent/PostFromDialog';
+import { MyPostsList } from '../../_components/myPostComponent/MyPostList';
 
 const userMyPostPage = () => {
   return (
@@ -9,10 +11,11 @@ const userMyPostPage = () => {
         <p className="text-muted-foreground">
           Create and manage your posts in one place. Here, you can view all your published and draft posts, edit them, and keep track of their performance. Stay organized and make the most out of your content creation journey.
         </p>
+        <PostFromDialog mode="create"></PostFromDialog>
       </div>
 
       <Suspense fallback={<MyPostSkeleton />}>
-
+          <MyPostsList />
       </Suspense>
 
     </div>
