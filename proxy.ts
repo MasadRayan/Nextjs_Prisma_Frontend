@@ -8,7 +8,7 @@ import { getRefreshToken } from "./service/getRefreshToken";
 // This function can be marked `async` if using `await` inside
 
 const AUTH_ROUTES = ["/login", "/register"];
-const PUBLIC_ROUTES = ["/", "/news", "/about", "/contact", "/privacy-policy", "/terms-of-service", "/login", "/register"]; 
+const PUBLIC_ROUTES = ["/", "/news", "/about", "/contact", "/privacy-policy", "/terms-of-service", "/login", "/register", "/premium"]; 
 export async function proxy(request: NextRequest) {
   const pathName = request.nextUrl.pathname;
 
