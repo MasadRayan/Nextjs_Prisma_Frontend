@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { jwtUtils } from "./lib/jwtUtils";
+import { jwtUtils } from "./utils/jwtUtils";
 import { cookies } from "next/headers";
+import { getRefreshToken } from "./service/getRefreshToken";
 
 // This function can be marked `async` if using `await` inside
 
@@ -13,22 +14,42 @@ export async function proxy(request: NextRequest) {
 
   const cookirStore = await cookies()
 
-  const accessToken = request.cookies.get("accessToken")?.value;
+  let accessToken = request.cookies.get("accessToken")?.value;
+  const refreshToken = request.cookies.get("refreshToken")?.value;
 
-  const decodedToken = accessToken ? jwtUtils.verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string) : null;
+  let decodedAccessToken = accessToken ? jwtUtils.verifyToken(accessToken, process.env.JWT_ACCESS_SECRET as string) : null;
+
+  let decodedRefreshToken = refreshToken ? jwtUtils.verifyToken(refreshToken, process.env.JWT_REFRESH_SECRET as string) : null;
+
+  // If access token is invalid and refresh token is valid, get a new access token
+  if (!decodedAccessToken?.success && decodedRefreshToken?.success) {
+    const result = await getRefreshToken();
+
+    if (result.success) {
+      const newAccessToken = result.data.accessToken;
+
+      cookirStore.set("accessToken", newAccessToken, {
+        httpOnly: true,
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24, // 1 day
+      });
+
+      accessToken = newAccessToken;
+      decodedAccessToken = jwtUtils.verifyToken(accessToken!, process.env.JWT_ACCESS_SECRET as string);
+    }
+  }
 
   let userRole = null;
 
-  if (!decodedToken) {
+  if (!decodedAccessToken) {
     cookirStore.delete("accessToken");
-    return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  if (decodedToken?.success && decodedToken.data) {
-    userRole = (decodedToken?.data as JwtPayload).role
+  if (decodedAccessToken?.success && decodedAccessToken.data) {
+    userRole = (decodedAccessToken?.data as JwtPayload).role
   }
 
-  if (decodedToken && AUTH_ROUTES.includes(pathName)) {
+  if (decodedAccessToken && AUTH_ROUTES.includes(pathName)) {
     if (userRole === "USER") {
         return NextResponse.redirect(new URL("/dashboard", request.url));
     }
