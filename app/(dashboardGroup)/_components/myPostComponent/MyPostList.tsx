@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { headers } from 'next/headers';
 import { NewsItem } from "@/lib/types";
 import { MyPostCard } from "./MyPostCard";
 
 export async function MyPostsList() {
+  await headers();
   const result = {
     success: true,
     data: [
