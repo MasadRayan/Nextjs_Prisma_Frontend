@@ -1,3 +1,5 @@
+"use server"
+
 import React from "react";
 import { NewsCard } from "./NewsCard";
 
@@ -9,7 +11,7 @@ const PremiumNewsList = async () => {
         title: "My Fourth Post",
         content: "Content of the post goes here.",
         thumbnail: "https://i.ibb.co/4RQHr9ST/download-3.jpg",
-        isFeatured: false,
+        isFeatured: true,
         status: "PUBLISHED",
         tags: ["typescript", "prisma", "express"],
         views: 0,

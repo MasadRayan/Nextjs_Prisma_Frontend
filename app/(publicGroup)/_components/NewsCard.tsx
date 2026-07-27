@@ -18,7 +18,7 @@ export function NewsCard({ news }: NewsCardProps) {
     <article className="group relative flex flex-col overflow-hidden rounded-2xl bg-card/50 backdrop-blur-sm border border-border/40 transition-all duration-500 hover:bg-card hover:border-primary/50 hover:shadow-2xl">
       {/* Featured Badge */}
       {news.isFeatured && (
-        <div className="absolute left-4 top-4 z-20 flex items-center gap-1.5 rounded-full bg-linear-to-r from-amber-400 to-orange-500 px-3 py-1.5 shadow-lg">
+        <div className="absolute left-4 top-4 z-100 flex items-center gap-1.5 rounded-full bg-linear-to-r from-green-700 to-gray-500 px-3 py-1.5 shadow-lg">
           <Flame className="h-3.5 w-3.5 text-white" />
           <span className="text-xs font-semibold text-white uppercase tracking-wide">Trending</span>
         </div>
