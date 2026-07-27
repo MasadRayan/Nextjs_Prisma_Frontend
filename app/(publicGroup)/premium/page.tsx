@@ -1,6 +1,6 @@
 import React, { Suspense } from 'react'
-import { NewsSkeletonLoader } from '../_components/NewsSkeletonLoader';
-import PremiumNewsList from '../_components/PremiumNewsList';
+import { NewsSkeletonLoader } from '../_components/news/NewsSkeletonLoader';
+import PremiumNewsList from '../_components/news/PremiumNewsList';
 
 const PremiumNewsPage = () => {
   return (

@@ -55,6 +55,8 @@ const navLinks: NavLink[] = [
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
   { label: "Contact", href: "/contact" },
+  { label: "News", href: "/news" },
+  { label: "Premium", href: "/premium" },
 ];
 
 const userMenuItems: MenuItem[] = [
