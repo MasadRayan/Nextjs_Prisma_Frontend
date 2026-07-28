@@ -2,9 +2,10 @@
 import { Button } from '@/components/ui/button';
 import React, { useActionState, useEffect } from 'react'
 import { toast } from 'sonner';
+import subscribePremium from '../../_actions/subscribePremium';
 
 const PayButton = () => {
-    const [state, action, pending] = useActionState(() : any => {}, null)
+    const [state, action, pending] = useActionState(subscribePremium, null)
 
     useEffect(() => {
         if (!state) {

@@ -51,7 +51,8 @@ const PricingSection = async () => {
                         <span>Priority support</span>
                     </li>
                 </ul>
-                {!isActive && <PayButton />}
+                {/* {!isActive && <PayButton />} */}
+                { <PayButton />}
         </CardContent>
 
     </Card>
