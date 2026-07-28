@@ -1,16 +1,23 @@
-import { Button } from '@/components/ui/button';
-import React from 'react'
+import { Suspense } from "react";
+import { AllNewsSkeletonLoader } from "../_components/allNews/AllNewsCkeleton";
+import AllNewsList from "../_components/allNews/AllNewsList";
 
-const NewsPage = () => {
+
+const AllNewsPage = () => {
   return (
-    <div>
-        This is news page
-      <Button
-      size={"lg"}
-      variant={"default"}
-      >News</Button>
+    <div className= " mx-auto max-w-7xl space-y-6 px-4 py-10 sm:px-6 lg:px-8">
+      <div className="z-10 max-w-lg text-center mx-auto">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold mb-4">All News</h1>
+        <p className="text-muted-foreground">
+          Welcome to the news section! Here, you'll find a wide range of articles and updates on various topics. Stay informed with the latest news and insights from around the world.
+        </p>
+      </div>
+      <Suspense fallback={<AllNewsSkeletonLoader />}>
+        <AllNewsList />
+      </Suspense>
+      
     </div>
   )
 }
 
-export default NewsPage
+export default AllNewsPage
