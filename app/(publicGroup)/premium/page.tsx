@@ -15,7 +15,6 @@ const PremiumNewsPage = () => {
       <Suspense fallback={<NewsSkeletonLoader />}>
         <PremiumNewsList />
       </Suspense>
-
     </div>
   )
 }
