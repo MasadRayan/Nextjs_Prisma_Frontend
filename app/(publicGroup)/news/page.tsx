@@ -1,6 +1,6 @@
 import { Suspense } from "react";
-import { AllNewsSkeletonLoader } from "../_components/allNews/AllNewsCkeleton";
-import AllNewsList from "../_components/allNews/AllNewsList";
+import AllNewsList from "../_components/news/AllNewsList";
+import { NewsSkeletonLoader } from "../_components/news/NewsSkeletonLoader";
 
 
 const AllNewsPage = () => {
@@ -12,7 +12,7 @@ const AllNewsPage = () => {
           Welcome to the news section! Here, you'll find a wide range of articles and updates on various topics. Stay informed with the latest news and insights from around the world.
         </p>
       </div>
-      <Suspense fallback={<AllNewsSkeletonLoader />}>
+      <Suspense fallback={<NewsSkeletonLoader />}>
         <AllNewsList />
       </Suspense>
       

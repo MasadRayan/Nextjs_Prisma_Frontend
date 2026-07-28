@@ -2,7 +2,7 @@
 
 import { NewsItem } from "@/lib/types";
 import getAllPosts from "../../_actions/getAllPosts";
-import { NewsCard } from "../news/NewsCard";
+import { NewsCard } from "./NewsCard";
 
 const AllNewsList = async () => {
   const result = await getAllPosts();

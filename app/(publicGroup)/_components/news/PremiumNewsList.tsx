@@ -5,8 +5,13 @@ import { NewsCard } from "./NewsCard";
 import getAllPremiumPost from "../../_actions/getAllPremiumPost";
 import { NewsItem } from "@/lib/types";
 
-const PremiumNewsList = async () => {
-  const result = await getAllPremiumPost();
+const PremiumNewsList = async ({
+  searchParams,
+}: {
+  searchParams?: Promise<{ [key: string]: string | string[] | undefined }>;
+}) => {
+  const query = await searchParams;
+  const result = await getAllPremiumPost({query});
   const premiumNews = Array.isArray(result?.data)
     ? result.data
     : Array.isArray(result?.data?.data)
