@@ -4,6 +4,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { jwtUtils } from "./utils/jwtUtils";
 import { cookies } from "next/headers";
 import { getRefreshToken } from "./service/getRefreshToken";
+import getSubscriptionStatus from "./app/(publicGroup)/_actions/getSubscriptionStatus";
 
 // This function can be marked `async` if using `await` inside
 
@@ -81,6 +82,19 @@ export async function proxy(request: NextRequest) {
   }
   else if (pathName.startsWith("/author-dashboard") && userRole !== "AUTHOR") {
     return NextResponse.redirect(new URL("/not-found", request.url));
+  }
+
+  if (pathName === "/premium") {
+    const subscriptionStatus = await getSubscriptionStatus();
+
+    const isActive = Boolean(
+      subscriptionStatus.success && subscriptionStatus.data?.isSubscribed
+    )
+
+    if (!isActive) {
+      return NextResponse.redirect(new URL("/payment", request.url));
+    }
+
   }
 
   return NextResponse.next();
